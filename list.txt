@@ -1,0 +1,12 @@
+inventory_app/
+├── app.py
+├── inventory/
+│   └── routes.py
+├── requirements.txt
+├── nginx_config.txt
+└── templates/
+    ├── login.html
+    ├── dashboard.html
+    ├── asset_detail.html
+    ├── add_asset.html
+    └── add_software.html

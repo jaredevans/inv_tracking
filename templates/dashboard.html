@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Inventory Management</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>Asset Dashboard</h2>
+
+    <!-- Display filter status and Clear Filter button when active -->
+    {% if request.args.field and request.args.value %}
+      <div class="mb-3">
+        <span class="font-weight-bold">Filter Applied:</span>
+        {{ request.args.field|capitalize }} = {{ request.args.value }}
+        <a href="{{ url_for('inv.dashboard') }}" class="btn btn-warning btn-sm ml-2">Clear Filter</a>
+      </div>
+    {% endif %}
+
+    <a href="{{ url_for('inv.add_asset') }}" class="btn btn-success mb-3">Add New Asset</a>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <!-- Sortable Headers -->
+          <th>
+            <a href="{{ url_for('inv.dashboard', sortby='asset_tag', order=('desc' if request.args.get('sortby')=='asset_tag' and request.args.get('order', 'asc')=='asc' else 'asc')) }}">
+              Asset Tag
+              {% if request.args.get('sortby')=='asset_tag' %}
+                {% if request.args.get('order', 'asc')=='asc' %}
+                  ▲
+                {% else %}
+                  ▼
+                {% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>
+            <a href="{{ url_for('inv.dashboard', sortby='asset_name', order=('desc' if request.args.get('sortby')=='asset_name' and request.args.get('order', 'asc')=='asc' else 'asc')) }}">
+              Asset Name
+              {% if request.args.get('sortby')=='asset_name' %}
+                {% if request.args.get('order', 'asc')=='asc' %}
+                  ▲
+                {% else %}
+                  ▼
+                {% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>
+            <a href="{{ url_for('inv.dashboard', sortby='category', order=('desc' if request.args.get('sortby')=='category' and request.args.get('order', 'asc')=='asc' else 'asc')) }}">
+              Category
+              {% if request.args.get('sortby')=='category' %}
+                {% if request.args.get('order', 'asc')=='asc' %}
+                  ▲
+                {% else %}
+                  ▼
+                {% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>
+            <a href="{{ url_for('inv.dashboard', sortby='physical_location', order=('desc' if request.args.get('sortby')=='physical_location' and request.args.get('order', 'asc')=='asc' else 'asc')) }}">
+              Physical Location
+              {% if request.args.get('sortby')=='physical_location' %}
+                {% if request.args.get('order', 'asc')=='asc' %}
+                  ▲
+                {% else %}
+                  ▼
+                {% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>
+            <a href="{{ url_for('inv.dashboard', sortby='department', order=('desc' if request.args.get('sortby')=='department' and request.args.get('order', 'asc')=='asc' else 'asc')) }}">
+              Department
+              {% if request.args.get('sortby')=='department' %}
+                {% if request.args.get('order', 'asc')=='asc' %}
+                  ▲
+                {% else %}
+                  ▼
+                {% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <!-- New Software Column -->
+          <th>Software</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for asset in assets %}
+        <tr>
+          <td>{{ asset.asset_tag }}</td>
+          <td>{{ asset.asset_name }}</td>
+          <td>
+            <a href="{{ url_for('inv.dashboard', field='category', value=asset.category) }}">
+              {{ asset.category }}
+            </a>
+          </td>
+          <td>
+            <a href="{{ url_for('inv.dashboard', field='physical_location', value=asset.physical_location) }}">
+              {{ asset.physical_location }}
+            </a>
+          </td>
+          <td>
+            <a href="{{ url_for('inv.dashboard', field='department', value=asset.department) }}">
+              {{ asset.department }}
+            </a>
+          </td>
+          <!-- Software count -->
+          <td>{{ asset.software_packages|length }}</td>
+          <td>{{ asset.description[:20] if asset.description else '' }}</td>
+          <td>
+            <a href="{{ url_for('inv.view_asset', asset_id=asset.id) }}" class="btn btn-primary btn-sm">View / Edit</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8">No assets found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a href="{{ url_for('inv.logout') }}" class="btn btn-secondary">Logout</a>
+  </div>
+</body>
+</html>
+

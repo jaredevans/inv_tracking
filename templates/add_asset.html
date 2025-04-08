@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add New Asset - Inventory Management</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>Add New Asset</h2>
+    <form method="post">
+      <!-- Basic Information -->
+      <h4>Basic Information</h4>
+      <div class="form-group">
+        <label>Asset Tag</label>
+        <input type="text" name="asset_tag" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Asset Name</label>
+        <input type="text" name="asset_name" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <input type="text" name="category" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" class="form-control"></textarea>
+      </div>
+
+      <!-- Technical Details -->
+      <h4>Technical Details</h4>
+      <!-- Removed Manufacturer -->
+      <!--
+      <div class="form-group">
+        <label>Manufacturer</label>
+        <input type="text" name="manufacturer" class="form-control">
+      </div>
+      -->
+      <!-- Removed Model -->
+      <!--
+      <div class="form-group">
+        <label>Model</label>
+        <input type="text" name="model" class="form-control">
+      </div>
+      -->
+      <div class="form-group">
+        <label>Serial Number</label>
+        <input type="text" name="serial_number" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Operating System</label>
+        <input type="text" name="operating_system" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>IP Address</label>
+        <input type="text" name="ip_address" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>MAC Address</label>
+        <input type="text" name="mac_address" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Configuration Details</label>
+        <textarea name="configuration_details" class="form-control"></textarea>
+      </div>
+
+      <!-- Procurement and Financial -->
+      <h4>Procurement and Financial</h4>
+      <div class="form-group">
+        <label>Purchase Date</label>
+        <input type="date" name="purchase_date" class="form-control">
+      </div>
+      <!-- Removed Cost -->
+      <!--
+      <div class="form-group">
+        <label>Cost</label>
+        <input type="number" step="0.01" name="cost" class="form-control">
+      </div>
+      -->
+      <!-- Removed Warranty Expiration -->
+      <!--
+      <div class="form-group">
+        <label>Warranty Expiration</label>
+        <input type="date" name="warranty_expiration" class="form-control">
+      </div>
+      -->
+      <div class="form-group">
+        <label>Vendor</label>
+        <input type="text" name="vendor" class="form-control">
+      </div>
+
+      <!-- Location and Assignment -->
+      <h4>Location and Assignment</h4>
+      <div class="form-group">
+        <label>Physical Location</label>
+        <input type="text" name="physical_location" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Department</label>
+        <input type="text" name="department" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Assigned To</label>
+        <input type="text" name="assigned_to" class="form-control">
+      </div>
+
+      <!-- Lifecycle and Maintenance -->
+      <h4>Lifecycle and Maintenance</h4>
+      <!-- Removed Acquisition Method -->
+      <!--
+      <div class="form-group">
+        <label>Acquisition Method</label>
+        <input type="text" name="acquisition_method" class="form-control">
+      </div>
+      -->
+      <div class="form-group">
+        <label>Status</label>
+        <input type="text" name="status" class="form-control">
+      </div>
+      <!-- Removed Maintenance History -->
+      <!--
+      <div class="form-group">
+        <label>Maintenance History</label>
+        <textarea name="maintenance_history" class="form-control"></textarea>
+      </div>
+      -->
+      <!-- Removed Depreciation Details -->
+      <!--
+      <div class="form-group">
+        <label>Depreciation Details</label>
+        <input type="text" name="depreciation_details" class="form-control">
+      </div>
+      -->
+      <!-- Removed End of Life -->
+      <!--
+      <div class="form-group">
+        <label>End of Life</label>
+        <input type="date" name="end_of_life" class="form-control">
+      </div>
+      -->
+
+      <!-- Data Categorization and Compliance -->
+      <h4>Data Categorization and Compliance</h4>
+      <div class="form-group">
+        <label>Data Classification</label>
+        <input type="text" name="data_classification" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Data Types</label>
+        <input type="text" name="data_types" class="form-control">
+      </div>
+      <!-- Removed Data Volume -->
+      <!--
+      <div class="form-group">
+        <label>Data Volume</label>
+        <input type="text" name="data_volume" class="form-control">
+      </div>
+      -->
+      <div class="form-group">
+        <label>Data Storage Location</label>
+        <input type="text" name="data_storage_location" class="form-control">
+      </div>
+      <!-- Removed Data Retention Policy -->
+      <!--
+      <div class="form-group">
+        <label>Data Retention Policy</label>
+        <textarea name="data_retention_policy" class="form-control"></textarea>
+      </div>
+      -->
+      <div class="form-group">
+        <label>Data Processing Activities</label>
+        <textarea name="data_processing_activities" class="form-control"></textarea>
+      </div>
+      <!-- Removed Compliance Details -->
+      <!--
+      <div class="form-group">
+        <label>Compliance Details</label>
+        <textarea name="compliance_details" class="form-control"></textarea>
+      </div>
+      -->
+      <button type="submit" class="btn btn-primary">Add Asset</button>
+    </form>
+    <a href="{{ url_for('inv.dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+  </div>
+</body>
+</html>
