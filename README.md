@@ -1,4 +1,4 @@
-# inv_tracking
+# Track Inventory
 Proof of concept Flask-based inventory tracking - For reference only, not for production use.
 
 <img src="https://i.imgur.com/jjUbMXU.png" width=700 height=300>
