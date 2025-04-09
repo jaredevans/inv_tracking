@@ -1,5 +1,5 @@
-# Track Inventory
-Proof of concept Flask-based inventory tracking - For reference only, not for production use.
+# Track Inventory of Systems
+Proof of concept Flask-based inventory tracking of systems - For reference only, not for production use.
 
 With the trifecta of sorting, filtering and wildcard search.
 
