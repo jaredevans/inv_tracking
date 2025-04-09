@@ -9,6 +9,13 @@
   <div class="container mt-5">
     <h2>Asset Dashboard</h2>
 
+    <!-- Search Form -->
+    <form method="get" action="{{ url_for('inv.dashboard') }}" class="form-inline mb-3">
+      <input type="text" name="search" class="form-control mr-2" placeholder="Search assets..." value="{{ search_term or '' }}">
+      <button type="submit" class="btn btn-primary">Search</button>
+      <!-- Optional: if other GET parameters exist, include hidden inputs -->
+    </form>
+
     <!-- Display filter status and Clear Filter button when active -->
     {% if request.args.field and request.args.value %}
       <div class="mb-3">
@@ -127,4 +134,3 @@
   </div>
 </body>
 </html>
-

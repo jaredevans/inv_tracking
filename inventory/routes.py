@@ -4,11 +4,11 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from datetime import datetime
 from functools import wraps
 from models import db, Asset, Software
+from sqlalchemy import func, or_
 
 inv_bp = Blueprint('inv', __name__, url_prefix='/inv')
 
 def login_required(f):
-    from functools import wraps
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('logged_in'):
@@ -38,9 +38,6 @@ def logout():
     flash('You have been logged out.')
     return redirect(url_for('inv.login'))
 
-
-from sqlalchemy import func  # Import func to use lower()
-
 @inv_bp.route('/dashboard')
 @login_required
 def dashboard():
@@ -52,12 +49,29 @@ def dashboard():
     sortby = request.args.get('sortby')
     order = request.args.get('order', 'asc')  # Default to ascending
 
+    # Retrieve the search term from the query parameter
+    search_term = request.args.get('search')
+
     query = Asset.query
 
     # Apply filtering if a valid filter is provided.
     allowed_filters = ['category', 'physical_location', 'department']
     if filter_field and filter_value and filter_field in allowed_filters:
         query = query.filter(getattr(Asset, filter_field) == filter_value)
+
+    # Apply wildcard search for the specified fields if search term provided.
+    if search_term:
+        like_pattern = f"%{search_term.lower()}%"
+        query = query.outerjoin(Asset.software_packages).filter(
+            or_(
+                func.lower(Asset.asset_tag).like(like_pattern),
+                func.lower(Asset.asset_name).like(like_pattern),
+                func.lower(Asset.physical_location).like(like_pattern),
+                func.lower(Asset.department).like(like_pattern),
+                func.lower(Asset.description).like(like_pattern),
+                func.lower(Software.software_name).like(like_pattern)
+            )
+        ).distinct()
 
     # Apply case-insensitive sorting if a valid sort field is provided.
     allowed_sort_fields = ['asset_tag', 'asset_name', 'category', 'physical_location', 'department']
@@ -69,8 +83,7 @@ def dashboard():
             query = query.order_by(func.lower(column).asc())
 
     assets = query.all()
-    return render_template('dashboard.html', assets=assets)
-
+    return render_template('dashboard.html', assets=assets, search_term=search_term)
 
 @inv_bp.route('/asset/<int:asset_id>', methods=['GET', 'POST'])
 @login_required
@@ -81,26 +94,21 @@ def view_asset(asset_id):
         asset.asset_name = request.form.get('asset_name')
         asset.category = request.form.get('category')
         asset.description = request.form.get('description')
-        # Removed: manufacturer, model fields
         asset.serial_number = request.form.get('serial_number')
         asset.operating_system = request.form.get('operating_system')
         asset.ip_address = request.form.get('ip_address')
         asset.mac_address = request.form.get('mac_address')
         asset.configuration_details = request.form.get('configuration_details')
         asset.purchase_date = datetime.strptime(request.form.get('purchase_date'), '%Y-%m-%d') if request.form.get('purchase_date') else None
-        # Removed: cost and warranty_expiration fields
         asset.vendor = request.form.get('vendor')
         asset.physical_location = request.form.get('physical_location')
         asset.department = request.form.get('department')
         asset.assigned_to = request.form.get('assigned_to')
-        # Removed: acquisition_method
         asset.status = request.form.get('status')
-        # Removed: maintenance_history, depreciation_details, end_of_life
         asset.data_classification = request.form.get('data_classification')
         asset.data_types = request.form.get('data_types')
         asset.data_storage_location = request.form.get('data_storage_location')
         asset.data_processing_activities = request.form.get('data_processing_activities')
-        # Removed: data_volume, data_retention_policy, compliance_details
         db.session.commit()
         flash('Asset updated successfully!')
         return redirect(url_for('inv.dashboard'))
@@ -115,26 +123,21 @@ def add_asset():
             asset_name=request.form.get('asset_name'),
             category=request.form.get('category'),
             description=request.form.get('description'),
-            # Removed: manufacturer and model
             serial_number=request.form.get('serial_number'),
             operating_system=request.form.get('operating_system'),
             ip_address=request.form.get('ip_address'),
             mac_address=request.form.get('mac_address'),
             configuration_details=request.form.get('configuration_details'),
             purchase_date=datetime.strptime(request.form.get('purchase_date'), '%Y-%m-%d') if request.form.get('purchase_date') else None,
-            # Removed: cost and warranty_expiration
             vendor=request.form.get('vendor'),
             physical_location=request.form.get('physical_location'),
             department=request.form.get('department'),
             assigned_to=request.form.get('assigned_to'),
-            # Removed: acquisition_method
             status=request.form.get('status'),
-            # Removed: maintenance_history, depreciation_details, end_of_life,
             data_classification=request.form.get('data_classification'),
             data_types=request.form.get('data_types'),
             data_storage_location=request.form.get('data_storage_location'),
             data_processing_activities=request.form.get('data_processing_activities')
-            # Removed: data_volume, data_retention_policy, compliance_details
         )
         db.session.add(new_asset)
         db.session.commit()
@@ -151,10 +154,8 @@ def add_software(asset_id):
             asset_id=asset.id,
             software_name=request.form.get('software_name'),
             version=request.form.get('version'),
-            # Removed installation_date
             license_info=request.form.get('license_info'),
             vendor=request.form.get('vendor'),
-            # Removed patch_history
             configuration_details=request.form.get('configuration_details')
         )
         db.session.add(new_software)
@@ -170,14 +171,10 @@ def edit_software(software_id):
     if request.method == 'POST':
         software.software_name = request.form.get('software_name')
         software.version = request.form.get('version')
-        # Removed installation_date handling
         software.license_info = request.form.get('license_info')
         software.vendor = request.form.get('vendor')
-        # Removed patch_history handling
         software.configuration_details = request.form.get('configuration_details')
-
         db.session.commit()
         flash('Software package updated successfully!')
         return redirect(url_for('inv.view_asset', asset_id=software.asset_id))
     return render_template('edit_software.html', software=software)
-
